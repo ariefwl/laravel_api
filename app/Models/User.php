@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -17,10 +18,16 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $table = 'users';
     protected $fillable = [
-        'name',
         'email',
+        'username',
         'password',
+        'name',
+        'company_id',
+        'type',
+        'avatarImage',
+        'email_verified_at'
     ];
 
     /**
@@ -41,4 +48,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected function avatarImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($image) => asset('/storage/avatar/' . $image),
+        );
+    }
 }

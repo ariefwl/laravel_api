@@ -7,22 +7,29 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\UserResource; 
 
 class AuthController extends Controller
 {
-    public function list()
+    public function index()
     {
+        // $user = User::all();
+        // return response()->json([
+        //     'data' => $user
+        // ]);
         $user = User::all();
-        return response()->json([
-            'data' => $user
-        ]);
+        return new UserResource(true, 'Daftar User', $user);
     }
 
-    public function register(Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
             'email' => 'required|unique:users|email',
+            'username' => 'required',
+            'name' => 'required',
+            'company_id' => 'required',
+            'type' => 'required',
+            'avatarImage' => 'required|image|mimes:jpg,png,jpeg|max:2048',
             'password' => 'required',
             'confirm_password' => 'required|same:password'
         ]);
@@ -32,8 +39,12 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Ada kesalahan !',
                 'data' => $validator->errors()
-            ]);
+            ], 422);
         }
+
+        //upload foto
+        $foto = $request->file('avatarImage');
+        $foto->storeAs('public/avatar', $foto->hashName());
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
@@ -41,11 +52,12 @@ class AuthController extends Controller
 
         $success['token'] = $user->createToken('auth_token')->plainTextToken;
         $success['name'] = $user->name;
-        return response()->json([
-            'success' => true,
-            'message' => 'Register berhasil !',
-            'data' => $success
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Register berhasil !',
+        //     'data' => $success
+        // ]);
+        return new UserResource(true, 'Register berhasil !', $user);
     }
 
     public function login(Request $request)
