@@ -19,8 +19,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $user = User::all();
-        // return new UserResource(true, 'Daftar User', $user);
         try {
             $user = User::all();
             return response()->json([
@@ -154,6 +152,8 @@ class UserController extends Controller
     
                 //update post with new image
                 $user->update([
+                    'email' => $request->email,
+                    'username' => $request->username,
                     'name' => $request->name,
                     'company_id' => $request->company_id,
                     'type' => $request->type,
@@ -166,6 +166,8 @@ class UserController extends Controller
             } else {
                 //update data tanpa avatar
                 $user->update([
+                    'email' => $request->email,
+                    'username' => $request->username,
                     'name' => $request->name,
                     'company_id' => $request->company_id,
                     'type' => $request->type,
@@ -188,6 +190,16 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            User::findOrFail($id)->delete();
+            return response()->json([
+                "success" => true,
+                "message" => 'Data berhasil di hapus !'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Tidak ada data !'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 }
