@@ -53,7 +53,7 @@ class UserController extends Controller
                 'name' => 'required',
                 'company_id' => 'required',
                 'type' => 'required',
-                'avatarImage' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+                // 'avatarImage' => 'required|image|mimes:jpg,png,jpeg|max:2048',
                 'password' => 'required',
                 'confirm_password' => 'required|same:password'
             ]);
@@ -74,12 +74,13 @@ class UserController extends Controller
             $input['password'] = bcrypt($input['password']);
             $user = User::create($input);
     
-            $success['token'] = $user->createToken('auth_token')->plainTextToken;
-            $success['name'] = $user->name;
+            // $success['token'] = $user->createToken('auth_token')->plainTextToken;
+            // $success['name'] = $user->name;
 
             return response()->json([
                 'success' => true,
-                'message' => 'Registrasi berhasil !'
+                'message' => 'Registrasi berhasil !',
+
             ], Response::HTTP_CREATED);
 
         } catch (QueryException $e) {
@@ -124,14 +125,14 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             $validator = Validator::make($request->all(), [
-                'email' => 'required|unique:users|email',
+                // 'email' => 'required|unique:users|email',
                 'username' => 'required',
                 'name' => 'required',
                 'company_id' => 'required',
                 'type' => 'required',
-                'avatarImage' => 'required|image|mimes:jpg,png,jpeg|max:2048',
-                // 'password' => 'required',
-                // 'confirm_password' => 'required|same:password'
+                // 'avatarImage' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+                'password' => 'required',
+                'confirm_password' => 'required|same:password'
             ]);
     
             if ($validator->fails()) {

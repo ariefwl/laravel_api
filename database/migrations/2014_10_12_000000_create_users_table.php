@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('company_id');
             $table->string('type');
-            $table->string('avatarImage');
+            $table->string('avatarImage')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
